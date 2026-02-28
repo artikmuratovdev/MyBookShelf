@@ -1,0 +1,4 @@
+.venv/
+media/books/covers/*
+media/books/pdfs/*
+.db.sqlite3

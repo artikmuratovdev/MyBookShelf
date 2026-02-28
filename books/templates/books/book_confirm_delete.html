@@ -1,0 +1,28 @@
+{% extends 'books/base.html' %}
+
+{% block title %}O'chirish - Artikmuratov's BookShelf{% endblock %}
+
+{% block content %}
+<div class="form-card" style="text-align: center; max-width: 500px; padding: 3rem;">
+    <div style="margin-bottom: 1.5rem; color: var(--danger);">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+    </div>
+    
+    <h2 style="margin-bottom: 1rem;">O'chirishni tasdiqlang</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2.5rem;">
+        Haqiqatan ham "<strong>{{ book.title }}</strong>" kitobini va unga biriktirilgan fayllarni butunlay o'chirib tashlamoqchimisiz?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button type="submit" class="btn btn-danger">Ha, o'chirish</button>
+            <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

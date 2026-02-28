@@ -1,0 +1,55 @@
+{% extends 'books/base.html' %}
+
+{% block title %}
+    {% if object %}
+        Kitobni tahrirlash - Artikmuratov's BookShelf
+    {% else %}
+        Yangi kitob qo'shish - Artikmuratov's BookShelf
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{% url 'book_list' %}" class="btn btn-outline">&larr; Orqaga</a>
+</div>
+
+<div class="form-card">
+    <h2 style="margin-bottom: 2rem; color: var(--primary);">
+        {% if object %}
+            Kitob ma'lumotlarini tahrirlash
+        {% else %}
+            Yangi kitob qo'shish
+        {% endif %}
+    </h2>
+
+    <!-- enctype="multipart/form-data" is required for file uploads! -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Loop through form fields dynamically for cleaner template code -->
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">
+                        {{ field.help_text|safe }}
+                    </small>
+                {% endif %}
+                {% if field.errors %}
+                    <div style="color: var(--danger); font-size: 0.875rem; margin-top: 0.5rem;">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+        
+        <div class="form-actions">
+            <button type="submit" class="btn" style="flex:1;">Saqlash</button>
+            <a href="{% url 'book_list' %}" class="btn btn-outline">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

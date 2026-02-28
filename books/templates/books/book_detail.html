@@ -1,0 +1,184 @@
+{% extends 'books/base.html' %}
+
+{% block title %}{{ book.title }} - Artikmuratov's BookShelf{% endblock %}
+
+{% block content %}
+<style>
+    .detail-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+    }
+    
+    @media(min-width: 768px){
+        .detail-container {
+            grid-template-columns: 350px 1fr;
+            padding: 3rem;
+        }
+    }
+
+    .detail-left {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .detail-cover {
+        width: 100%;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        background: #e2e8f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        aspect-ratio: 2/3;
+    }
+
+    .detail-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .detail-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+    }
+
+    .book-header .author {
+        font-size: 1.125rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .info-list {
+        background: var(--bg-color);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 0.75rem;
+    }
+    
+    .info-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        width: 150px;
+        color: var(--text-main);
+    }
+
+    .info-value {
+        color: var(--text-muted);
+        flex: 1;
+    }
+
+    .description {
+        margin-bottom: 2rem;
+    }
+    
+    .description h3 {
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .actions-bar {
+        display: flex;
+        gap: 1rem;
+        margin-top: auto;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .pdf-preview {
+        margin-top: 3rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        height: 600px;
+    }
+</style>
+
+<div class="page-header">
+    <a href="{% url 'book_list' %}" class="btn btn-outline">&larr; Orqaga</a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-left">
+        <div class="detail-cover">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }} muqovasi">
+            {% else %}
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+            {% endif %}
+        </div>
+        
+        {% if book.pdf_file %}
+            <a href="{{ book.pdf_file.url }}" class="btn" style="width: 100%;" download>
+                PDF formatda yuklash
+            </a>
+            <a href="{{ book.pdf_file.url }}" class="btn btn-outline" style="width: 100%;" target="_blank">
+                Brauzerda ochish
+            </a>
+        {% else %}
+            <div style="text-align: center; color: var(--text-muted); padding: 1rem; background: var(--bg-color); border-radius: var(--radius-md);">
+                PDF fayl biriktirilmagan
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="detail-right">
+        <div class="book-header">
+            <h1>{{ book.title }}</h1>
+            <div class="author">Muallif: {{ book.author }}</div>
+        </div>
+
+        <div class="info-list">
+            <div class="info-item">
+                <span class="info-label">Nashr yili</span>
+                <span class="info-value">{{ book.published_year }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Saytga qo'shildi</span>
+                <span class="info-value">{{ book.created_at|date:"d M, Y" }}</span>
+            </div>
+        </div>
+
+        <div class="description">
+            <h3>Kitob haqida</h3>
+            <div style="color: var(--text-muted); line-height: 1.8;">
+                {{ book.description|linebreaks }}
+            </div>
+        </div>
+
+        <div class="actions-bar">
+            <a href="{% url 'book_update' book.pk %}" class="btn btn-outline">Tahrirlash</a>
+            <a href="{% url 'book_delete' book.pk %}" class="btn btn-danger">O'chirish</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

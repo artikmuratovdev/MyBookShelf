@@ -1,0 +1,166 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Barcha kitoblar - Artikmuratov's BookShelf{% endblock %}
+
+{% block content %}
+<style>
+    /* Book Card Component Styles */
+    .book-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        border: 1px solid transparent;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--border-color);
+    }
+
+    .book-cover {
+        height: 200px;
+        background-color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .book-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .book-card:hover .book-cover img {
+        transform: scale(1.05);
+    }
+    
+    .cover-placeholder {
+        color: var(--text-muted);
+        font-size: 3rem;
+        opacity: 0.5;
+    }
+
+    .book-info {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+        line-height: 1.3;
+    }
+
+    .book-author {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .book-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .badge {
+        background: #f1f5f9;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .book-actions {
+        margin-top: auto;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .book-actions .btn {
+        flex: 1;
+        padding: 0.5rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        grid-column: 1 / -1;
+    }
+    
+    .empty-state p {
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="page-header">
+    <h2>Barcha Kitoblar</h2>
+</div>
+
+{% if books %}
+    <div class="grid-cards">
+        {% for book in books %}
+        <div class="book-card">
+            <div class="book-cover">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }} muqovasi">
+                {% else %}
+                    <!-- SVG Placeholder if no image -->
+                    <svg class="cover-placeholder" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                {% endif %}
+            </div>
+            
+            <div class="book-info">
+                <div class="book-title">{{ book.title }}</div>
+                <div class="book-author">{{ book.author }}</div>
+                <div class="book-meta">
+                    <span class="badge">{{ book.published_year }}</span>
+                    {% if book.pdf_file %}
+                        <span class="badge" style="background: #e0e7ff; color: var(--primary);">📄 PDF mavjud</span>
+                    {% endif %}
+                </div>
+                
+                <div class="book-actions">
+                    <a href="{% url 'book_detail' book.pk %}" class="btn">Ko'rish</a>
+                    {% if book.pdf_file %}
+                        <a href="{{ book.pdf_file.url }}" class="btn btn-outline" download>Yuklab olish</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.5;">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <h3>Kutubxona bo'sh</h3>
+        <p>Hali hech qanday kitob qo'shilmagan. Birinchi kitobni qo'shing!</p>
+        <a href="{% url 'book_create' %}" class="btn">Kitob qo'shish</a>
+    </div>
+{% endif %}
+{% endblock %}
